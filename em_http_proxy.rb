@@ -17,25 +17,19 @@ end
 module HttpProxy 
   include EM::P::LineText2
 
-  def initialize verbose_mode = true
-    @verbose = verbose_mode
-  end
-    
   def post_init
     @lines = []
   end
 
   def receive_line line
     @lines << line
-
-    if line.start_with? "Host: "
-      host, port = line[6..-1].split(':')
-      port = (port || 80).to_i
+    if line.start_with? 'Host'
       set_binary_mode
-      puts uri = @lines.first.split[1]
-      @proxy = EM.connect host, port, ProxyConnection, self do |p|
-        p.send_data @lines.join("\n") + "\n"
+      field, host, port = line.split ':'
+      @proxy = EM.connect host.strip, (port || 80).to_i, ProxyConnection, self do |p|
+        p.send_data @lines.join("\r\n") + "\r\n"
       end
+      puts uri = @lines[0].split[1]
     end
   end
 
@@ -44,11 +38,11 @@ module HttpProxy
   end
   
   def unbind
-    @proxy.close_connection_after_writing if @proxy
+    @proxy.close_connection if @proxy
   end
 end
 
-EM.run {
+EM.run do
   EM.start_server "0.0.0.0", 9000, HttpProxy
   puts "em_http_proxy is ready on :9000"
-}
+end
