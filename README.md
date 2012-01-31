@@ -13,7 +13,7 @@ HTTP 테스트나 개발용도로 간단한 프록시 서버가 필요할 때 �
 # 스크립트 실행방법
 
     sudo gem install eventmachine
-    curl -s http://github.com/hatemogi/em_http_proxy/raw/master/proxy.rb | ruby
+    curl -s https://raw.github.com/hatemogi/em_http_proxy/master/proxy.rb | ruby
 
 * 위와같이 실행하면 9000번 포트에 HTTP 프록시 서버가 준비됩니다.
 * eventmachine 설치는 처음 한번만 하면 되겠죠.
